@@ -1,0 +1,33 @@
+{
+    "name": "thruster/data-mapper",
+    "type": "library",
+    "description": "Thruster DataMapper Component",
+    "keywords": ["datamapper", "data-mapper", "mapper", "thruster"],
+    "homepage": "https://thruster.io",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aurimas Niekis",
+            "email": "aurimas@niekis.lt"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "symfony/validator": ">=2.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~5.0"
+    },
+    "autoload": {
+        "psr-4": { "Thruster\\Component\\DataMapper\\": "src" }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-ci": "vendor/bin/phpunit -c phpunit.xml.ci"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
