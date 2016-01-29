@@ -27,6 +27,14 @@ Via Composer
 $ composer require thruster/data-mapper
 ```
 
+### For PHP < 7.0
+
+For older PHP version than PHP7 there is branch **php5**
+
+``` bash
+$ composer require thruster/data-mapper ">=1.0,<2.0"
+```
+
 
 ## Usage
 
