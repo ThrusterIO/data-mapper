@@ -3,8 +3,8 @@
 namespace Thruster\Component\DataMapper\Tests;
 
 use Thruster\Component\DataMapper\DataMapper;
-use Thruster\Component\DataMapper\DataMapperInterface;
 use Thruster\Component\DataMapper\Exception\DataMapperOutputNotValidException;
+use Thruster\Component\DataMapper\Tests\Fixtures\UnsupportedMapper;
 
 class DataMapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -35,23 +35,9 @@ class DataMapperTest extends \PHPUnit_Framework_TestCase
     public function testMapUnsupported()
     {
         $input = new \stdClass();
-        $mapperMock = new class implements DataMapperInterface {
-            public function map($input)
-            {
-            }
+        $mapper = new UnsupportedMapper();
 
-            public static function getName() : string
-            {
-                return 'demo';
-            }
-
-            public function supports($input) : bool
-            {
-                return false;
-            }
-        };
-
-        $mapper = new DataMapper($mapperMock);
+        $mapper = new DataMapper($mapper);
         $mapper->map($input);
     }
 

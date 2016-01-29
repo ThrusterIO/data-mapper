@@ -60,7 +60,7 @@ class DataMappers
      *
      * @return $this
      */
-    public function addMapper(string $name, DataMapperInterface $dataMapper) : self
+    public function addMapper($name, DataMapperInterface $dataMapper)
     {
         $this->dataMappers[$name] = $dataMapper;
 
@@ -72,7 +72,7 @@ class DataMappers
      *
      * @return bool
      */
-    public function hasMapper(string $name) : bool
+    public function hasMapper($name)
     {
         return array_key_exists($name, $this->dataMappers);
     }
@@ -82,7 +82,7 @@ class DataMappers
      *
      * @return DataMapper
      */
-    public function getMapper(string $name) : DataMapper
+    public function getMapper($name)
     {
         if (array_key_exists($name, $this->wrappedDataMappers)) {
             return $this->wrappedDataMappers[$name];
@@ -105,7 +105,7 @@ class DataMappers
      *
      * @return $this
      */
-    public function removeMapper(string $name) : self
+    public function removeMapper($name)
     {
         unset($this->dataMappers[$name]);
         unset($this->wrappedDataMappers[$name]);

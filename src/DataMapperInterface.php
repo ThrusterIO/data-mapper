@@ -24,7 +24,7 @@ interface DataMapperInterface
      *
      * @return string
      */
-    public static function getName() : string;
+    public static function getName();
 
     /**
      * Checks if supports input
@@ -33,5 +33,5 @@ interface DataMapperInterface
      *
      * @return bool
      */
-    public function supports($input) : bool;
+    public function supports($input);
 }

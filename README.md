@@ -4,11 +4,11 @@
 (https://github.com/ThrusterIO/data-mapper/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)]
 (LICENSE)
-[![Build Status](https://img.shields.io/travis/ThrusterIO/data-mapper.svg?style=flat-square)]
+[![Build Status](https://img.shields.io/travis/ThrusterIO/data-mapper/php5.svg?style=flat-square)]
 (https://travis-ci.org/ThrusterIO/data-mapper)
-[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/ThrusterIO/data-mapper.svg?style=flat-square)]
+[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/ThrusterIO/data-mapper/php5.svg?style=flat-square)]
 (https://scrutinizer-ci.com/g/ThrusterIO/data-mapper)
-[![Quality Score](https://img.shields.io/scrutinizer/g/ThrusterIO/data-mapper.svg?style=flat-square)]
+[![Quality Score](https://img.shields.io/scrutinizer/g/ThrusterIO/data-mapper/php5.svg?style=flat-square)]
 (https://scrutinizer-ci.com/g/ThrusterIO/data-mapper)
 [![Total Downloads](https://img.shields.io/packagist/dt/thruster/data-mapper.svg?style=flat-square)]
 (https://packagist.org/packages/thruster/data-mapper)
@@ -24,7 +24,7 @@ The Thruster DataMapper Component. Provides fast and efficient way to map data f
 Via Composer
 
 ``` bash
-$ composer require thruster/data-mapper
+$ composer require thruster/data-mapper ">=1.0,<2.0"
 ```
 
 
@@ -33,7 +33,7 @@ $ composer require thruster/data-mapper
 ### Simple Data Mapping
 
 ```php
-$simpleMapper = new class implements DataMapperInterface {
+class SimpleMapper implements DataMapperInterface {
     /**
      * @param Request $input
      */
@@ -45,16 +45,18 @@ $simpleMapper = new class implements DataMapperInterface {
         ];
     }
 
-    public static function getName() : string
+    public static function getName()
     {
         return 'simple_mapper';
     }
 
-    public function supports($input) : bool
+    public function supports($input)
     {
         return true;
     }
 }
+
+$simpleMapper = new SimpleMapper();
 
 $dataMappers = new DataMappers();
 $dataMappers->addMapper($simpleMapper->getName(), $simpleMapper);
@@ -64,7 +66,7 @@ $dataMappers->getMapper('simple_mapper')->map($input);
 ### Validateable Data Mapping
 
 ```php
-$userRegistrationMapper = new class implements ValidateableDataMapperInterface {
+class UserRegistrationMapper implements ValidateableDataMapperInterface {
     /**
      * @param Request $input
      */
@@ -76,22 +78,24 @@ $userRegistrationMapper = new class implements ValidateableDataMapperInterface {
         $user->setPassword($input->get('password'));
     }
 
-    public static function getName() : string
+    public static function getName()
     {
         return 'user_registration';
     }
 
-    public function supports($input) : bool
+    public function supports($input)
     {
         return ($input instanceof Request);
     }
     
-    public function getValidationGroups($input) : array
+    public function getValidationGroups($input)
     {
         return ['full'];
     }
 }
 
+
+$userRegistrationMapper = new UserRegistrationMapper();
 $dataMappers = new DataMappers();
 $dataMappers->setValidator(Validation::createValidator());
 
@@ -101,29 +105,31 @@ $dataMappers->getMapper('user_registration')->map($input);
 
 ### Standalone Data Mapping
 ```php
-$simpleMapper = new DataMapper(
-    new class implements DataMapperInterface {
-        /**
-         * @param Request $input
-         */
-        public function map($input)
-        {
-            return [
-                'id' => $input->getId(),
-                'name' => $input->getName()
-            ];
-        }
-    
-        public static function getName() : string
-        {
-            return 'simple_mapper';
-        }
-    
-        public function supports($input) : bool
-        {
-            return true;
-        }
+class SimpleMapper implements DataMapperInterface {
+    /**
+     * @param Request $input
+     */
+    public function map($input)
+    {
+        return [
+            'id' => $input->getId(),
+            'name' => $input->getName()
+        ];
     }
+    
+    public static function getName() : string
+    {
+        return 'simple_mapper';
+    }
+    
+    public function supports($input) : bool
+    {
+        return true;
+    }
+}
+
+$simpleMapper = new DataMapper(
+    new SimpleMapper();
 );
 
 $simpleMapper->map($input);
