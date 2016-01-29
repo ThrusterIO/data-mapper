@@ -15,5 +15,5 @@ interface ValidateableDataMapperInterface extends DataMapperInterface
      *
      * @return array
      */
-    public function getValidationGroups($input) : array;
+    public function getValidationGroups($input);
 }
