@@ -41,7 +41,7 @@ $ composer require thruster/data-mapper ">=1.0,<2.0"
 ### Simple Data Mapping
 
 ```php
-$simpleMapper = new class implements DataMapperInterface {
+$simpleMapper = new class extends BaseDataMapper {
     /**
      * @param Request $input
      */
@@ -69,10 +69,56 @@ $dataMappers->addMapper($simpleMapper->getName(), $simpleMapper);
 $dataMappers->getMapper('simple_mapper')->map($input);
 ```
 
+### Nested Data Mapping
+
+```php
+$itemMapper = new class extends BaseDataMapper {
+    /**
+     * @param Request $input
+     */
+    public function map($input)
+    {
+        return [
+            'id' => $input->getId(),
+            'name' => $input->getName()
+        ];
+    }
+
+    public static function getName() : string
+    {
+        return 'items';
+    }
+}
+
+$mainMapper = new class extends BaseDataMapper {
+    /**
+     * @param Request $input
+     */
+    public function map($input)
+    {
+        return [
+            'id' => $input->getId(),
+            'name' => $input->getName(),
+            'items' => $this->getMapper('items')->mapCollection($input->getItems())
+        ];
+    }
+
+    public static function getName() : string
+    {
+        return 'simple_mapper';
+    }
+}
+
+$dataMappers = new DataMappers();
+$dataMappers->addMapper($mainMapper->getName(), $mainMapper);
+$dataMappers->addMapper($itemMapper->getName(), $itemMapper);
+$dataMappers->getMapper('simple_mapper')->map($input);
+```
+
 ### Validateable Data Mapping
 
 ```php
-$userRegistrationMapper = new class implements ValidateableDataMapperInterface {
+$userRegistrationMapper = new class extends BaseDataMapper implements ValidateableDataMapperInterface {
     /**
      * @param Request $input
      */
@@ -110,7 +156,7 @@ $dataMappers->getMapper('user_registration')->map($input);
 ### Standalone Data Mapping
 ```php
 $simpleMapper = new DataMapper(
-    new class implements DataMapperInterface {
+    new class extends BaseDataMapper {
         /**
          * @param Request $input
          */

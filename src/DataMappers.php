@@ -64,6 +64,8 @@ class DataMappers
     {
         $this->dataMappers[$name] = $dataMapper;
 
+        $dataMapper->setDataMappers($this);
+
         return $this;
     }
 
@@ -81,6 +83,7 @@ class DataMappers
      * @param string $name
      *
      * @return DataMapper
+     * @throws DataMapperNotFoundException
      */
     public function getMapper(string $name) : DataMapper
     {
