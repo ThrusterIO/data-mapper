@@ -59,6 +59,30 @@ class DataMapper
 
     /**
      * @param mixed $input
+     * @param bool $preserveKey
+     *
+     * @return array
+     * @throws DataMapperOutputNotValidException
+     * @throws NotSupportedInputForDataMapperException
+     */
+    public function mapCollection($input, $preserveKey = true)
+    {
+        $result = [];
+
+        foreach ($input as $key => $item) {
+            if (true === $preserveKey) {
+                $result[$key] = $this->map($item);
+                continue;
+            }
+
+            $result[] = $this->map($item);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param mixed $input
      *
      * @return mixed
      * @throws DataMapperOutputNotValidException

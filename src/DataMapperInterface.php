@@ -11,6 +11,24 @@ namespace Thruster\Component\DataMapper;
 interface DataMapperInterface
 {
     /**
+     * Dependency Injection for DataMappers
+     *
+     * @param DataMappers $dataMappers
+     *
+     * @return $this
+     */
+    public function setDataMappers(DataMappers $dataMappers);
+
+    /**
+     * Retrieves DataMapper from DataMappers
+     *
+     * @param string $name
+     *
+     * @return DataMapper
+     */
+    public function getMapper($name);
+
+    /**
      * Maps data
      *
      * @param mixed $input

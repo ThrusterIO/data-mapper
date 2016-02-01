@@ -4,6 +4,8 @@ namespace Thruster\Component\DataMapper\Tests;
 
 use Thruster\Component\DataMapper\DataMapper;
 use Thruster\Component\DataMapper\Exception\DataMapperOutputNotValidException;
+use Thruster\Component\DataMapper\Tests\Fixtures\ItemMapper;
+use Thruster\Component\DataMapper\Tests\Fixtures\MainMapper;
 use Thruster\Component\DataMapper\Tests\Fixtures\UnsupportedMapper;
 
 class DataMapperTest extends \PHPUnit_Framework_TestCase
@@ -26,6 +28,29 @@ class DataMapperTest extends \PHPUnit_Framework_TestCase
         $mapper = new DataMapper($mapperMock);
 
         $this->assertEquals($input, $mapper->map($input));
+    }
+
+    public function testMapCollection()
+    {
+        $input = new \stdClass();
+        $inputs = [10 => $input, 20 => $input, 30 => $input];
+
+        $mapperMock = $this->getMockForAbstractClass('\Thruster\Component\DataMapper\DataMapperInterface');
+
+        $mapperMock->expects($this->exactly(6))
+            ->method('supports')
+            ->with($input)
+            ->willReturn(true);
+
+        $mapperMock->expects($this->exactly(6))
+            ->method('map')
+            ->with($input)
+            ->willReturnArgument(0);
+
+        $mapper = new DataMapper($mapperMock);
+
+        $this->assertEquals($inputs, $mapper->mapCollection($inputs));
+        $this->assertEquals(array_values($inputs), $mapper->mapCollection($inputs, false));
     }
 
     /**
@@ -90,5 +115,29 @@ class DataMapperTest extends \PHPUnit_Framework_TestCase
         $exception = new DataMapperOutputNotValidException($violations);
 
         $this->assertEquals($violations, $exception->getViolations());
+    }
+
+    public function testNestedMapping()
+    {
+
+        $item = new \stdClass();
+        $items = [$item, $item];
+
+        $itemMapper = new ItemMapper();
+        $mainMapper = new MainMapper();
+
+        $given = new \stdClass();
+        $given->items = $items;
+
+        $dataMappersMock = $this->getMock('\Thruster\Component\DataMapper\DataMappers');
+        $dataMappersMock->expects($this->once())
+            ->method('getMapper')
+            ->with('items')
+            ->willReturn(new DataMapper($itemMapper));
+
+        $mainMapper->setDataMappers($dataMappersMock);
+
+        $mapper = new DataMapper($mainMapper);
+        $mapper->map($given);
     }
 }

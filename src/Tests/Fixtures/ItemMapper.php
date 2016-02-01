@@ -3,21 +3,21 @@
 namespace Thruster\Component\DataMapper\Tests\Fixtures;
 
 use Thruster\Component\DataMapper\BaseDataMapper;
-use Thruster\Component\DataMapper\DataMapperInterface;
 
 /**
- * Class UnsupportedMapper
+ * Class ItemMapper
  *
  * @package Thruster\Component\DataMapper\Tests\Fixtures
  * @author  Aurimas Niekis <aurimas@niekis.lt>
  */
-class UnsupportedMapper extends BaseDataMapper
+class ItemMapper extends BaseDataMapper
 {
     /**
      * @inheritDoc
      */
     public function map($input)
     {
+        return $input;
     }
 
     /**
@@ -25,14 +25,6 @@ class UnsupportedMapper extends BaseDataMapper
      */
     public static function getName()
     {
-        return 'demo';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function supports($input)
-    {
-        return false;
+        return 'items';
     }
 }

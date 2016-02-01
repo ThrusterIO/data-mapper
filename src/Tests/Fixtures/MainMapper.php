@@ -3,36 +3,25 @@
 namespace Thruster\Component\DataMapper\Tests\Fixtures;
 
 use Thruster\Component\DataMapper\BaseDataMapper;
-use Thruster\Component\DataMapper\DataMapperInterface;
 
 /**
- * Class UnsupportedMapper
+ * Class MainMapper
  *
  * @package Thruster\Component\DataMapper\Tests\Fixtures
  * @author  Aurimas Niekis <aurimas@niekis.lt>
  */
-class UnsupportedMapper extends BaseDataMapper
+class MainMapper extends BaseDataMapper
 {
-    /**
-     * @inheritDoc
-     */
+
     public function map($input)
     {
+        return [
+            'items' => $this->getMapper('items')->mapCollection($input->items)
+        ];
     }
 
-    /**
-     * @inheritDoc
-     */
     public static function getName()
     {
         return 'demo';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function supports($input)
-    {
-        return false;
     }
 }

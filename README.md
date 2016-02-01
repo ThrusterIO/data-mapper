@@ -33,7 +33,7 @@ $ composer require thruster/data-mapper ">=1.0,<2.0"
 ### Simple Data Mapping
 
 ```php
-class SimpleMapper implements DataMapperInterface {
+class SimpleMapper extends BaseDataMapper {
     /**
      * @param Request $input
      */
@@ -49,11 +49,6 @@ class SimpleMapper implements DataMapperInterface {
     {
         return 'simple_mapper';
     }
-
-    public function supports($input)
-    {
-        return true;
-    }
 }
 
 $simpleMapper = new SimpleMapper();
@@ -63,10 +58,59 @@ $dataMappers->addMapper($simpleMapper->getName(), $simpleMapper);
 $dataMappers->getMapper('simple_mapper')->map($input);
 ```
 
+### Nested Data Mapping
+
+```php
+class ItemMapper extends BaseDataMapper {
+    /**
+     * @param Request $input
+     */
+    public function map($input)
+    {
+        return [
+            'id' => $input->getId(),
+            'name' => $input->getName()
+        ];
+    }
+
+    public static function getName()
+    {
+        return 'items';
+    }
+}
+
+class MainMapper extends BaseDataMapper {
+    /**
+     * @param Request $input
+     */
+    public function map($input)
+    {
+        return [
+            'id' => $input->getId(),
+            'name' => $input->getName(),
+            'items' => $this->getMapper('items')->mapCollection($input->getItems())
+        ];
+    }
+
+    public static function getName()
+    {
+        return 'main';
+    }
+}
+
+$mainMapper = new MainMapper();
+$itemMapper = new ItemMapper();
+
+$dataMappers = new DataMappers();
+$dataMappers->addMapper($mainMapper->getName(), $mainMapper);
+$dataMappers->addMapper($itemMapper->getName(), $itemMapper);
+$dataMappers->getMapper('main')->map($input);
+```
+
 ### Validateable Data Mapping
 
 ```php
-class UserRegistrationMapper implements ValidateableDataMapperInterface {
+class UserRegistrationMapper extends BaseDataMapper implements ValidateableDataMapperInterface {
     /**
      * @param Request $input
      */
@@ -105,7 +149,7 @@ $dataMappers->getMapper('user_registration')->map($input);
 
 ### Standalone Data Mapping
 ```php
-class SimpleMapper implements DataMapperInterface {
+class SimpleMapper extends BaseDataMapper {
     /**
      * @param Request $input
      */
@@ -120,11 +164,6 @@ class SimpleMapper implements DataMapperInterface {
     public static function getName() : string
     {
         return 'simple_mapper';
-    }
-    
-    public function supports($input) : bool
-    {
-        return true;
     }
 }
 
