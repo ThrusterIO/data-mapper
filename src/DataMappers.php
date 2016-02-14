@@ -64,6 +64,8 @@ class DataMappers
     {
         $this->dataMappers[$name] = $dataMapper;
 
+        $dataMapper->setDataMappers($this);
+
         return $this;
     }
 
