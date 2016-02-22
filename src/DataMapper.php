@@ -67,6 +67,10 @@ class DataMapper
      */
     public function mapCollection($input, bool $preserveKey = true) : array
     {
+        if (empty($input)) {
+            return [];
+        }
+
         $result = [];
 
         foreach ($input as $key => $item) {
@@ -90,6 +94,10 @@ class DataMapper
      */
     public function map($input)
     {
+        if (null === $input) {
+            return null;
+        }
+
         $dataMapper = $this->getDataMapper();
 
         if (false === $dataMapper->supports($input)) {

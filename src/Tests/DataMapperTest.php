@@ -183,4 +183,22 @@ class DataMapperTest extends \PHPUnit_Framework_TestCase
         $mapper = new DataMapper($mainMapper);
         $mapper->map($given);
     }
+
+
+    public function testMapNull()
+    {
+        $mapperMock = $this->getMockForAbstractClass('\Thruster\Component\DataMapper\DataMapperInterface');
+
+        $mapper = new DataMapper($mapperMock);
+
+        $this->assertNull($mapper->map(null));
+    }
+    public function testMapCollectionNull()
+    {
+        $mapperMock = $this->getMockForAbstractClass('\Thruster\Component\DataMapper\DataMapperInterface');
+
+        $mapper = new DataMapper($mapperMock);
+        
+        $this->assertEquals([], $mapper->mapCollection(null));
+    }
 }
