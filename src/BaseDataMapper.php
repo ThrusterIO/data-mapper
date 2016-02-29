@@ -28,9 +28,9 @@ abstract class BaseDataMapper implements DataMapperInterface
     /**
      * @inheritDoc
      */
-    public function getMapper(string $name) : DataMapper
+    public function getMapper(string $class) : DataMapper
     {
-        return $this->dataMappers->getMapper($name);
+        return $this->dataMappers->getMapper($class);
     }
 
     /**

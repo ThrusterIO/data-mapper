@@ -41,7 +41,7 @@ $ composer require thruster/data-mapper ">=1.0,<2.0"
 ### Simple Data Mapping
 
 ```php
-$simpleMapper = new class extends BaseDataMapper {
+class SimpleMapper extends BaseDataMapper {
     /**
      * @param Request $input
      */
@@ -52,27 +52,17 @@ $simpleMapper = new class extends BaseDataMapper {
             'name' => $input->getName()
         ];
     }
-
-    public static function getName() : string
-    {
-        return 'simple_mapper';
-    }
-
-    public function supports($input) : bool
-    {
-        return true;
-    }
 }
 
 $dataMappers = new DataMappers();
-$dataMappers->addMapper($simpleMapper->getName(), $simpleMapper);
-$dataMappers->getMapper('simple_mapper')->map($input);
+$dataMappers->addMapper(new SimpleMapper());
+$dataMappers->getMapper(SimpleMapper::class)->map($input);
 ```
 
 ### Nested Data Mapping
 
 ```php
-$itemMapper = new class extends BaseDataMapper {
+class ItemMapper extends BaseDataMapper {
     /**
      * @param Request $input
      */
@@ -83,14 +73,9 @@ $itemMapper = new class extends BaseDataMapper {
             'name' => $input->getName()
         ];
     }
-
-    public static function getName() : string
-    {
-        return 'items';
-    }
 }
 
-$mainMapper = new class extends BaseDataMapper {
+class MainMapper extends BaseDataMapper {
     /**
      * @param Request $input
      */
@@ -99,26 +84,21 @@ $mainMapper = new class extends BaseDataMapper {
         return [
             'id' => $input->getId(),
             'name' => $input->getName(),
-            'items' => $this->getMapper('items')->mapCollection($input->getItems())
+            'items' => $this->getMapper(ItemMapper::class)->mapCollection($input->getItems())
         ];
-    }
-
-    public static function getName() : string
-    {
-        return 'simple_mapper';
     }
 }
 
 $dataMappers = new DataMappers();
-$dataMappers->addMapper($mainMapper->getName(), $mainMapper);
-$dataMappers->addMapper($itemMapper->getName(), $itemMapper);
-$dataMappers->getMapper('simple_mapper')->map($input);
+$dataMappers->addMapper(new MainMapper());
+$dataMappers->addMapper(new ItemMapper());
+$dataMappers->getMapper(MainMapper::class)->map($input);
 ```
 
 ### Validateable Data Mapping
 
 ```php
-$userRegistrationMapper = new class extends BaseDataMapper implements ValidateableDataMapperInterface {
+class UserRegistrationMapper extends BaseDataMapper implements ValidateableDataMapperInterface {
     /**
      * @param Request $input
      */
@@ -128,11 +108,6 @@ $userRegistrationMapper = new class extends BaseDataMapper implements Validateab
         
         $user->setUsername($input->get('username'));
         $user->setPassword($input->get('password'));
-    }
-
-    public static function getName() : string
-    {
-        return 'user_registration';
     }
 
     public function supports($input) : bool
@@ -149,8 +124,8 @@ $userRegistrationMapper = new class extends BaseDataMapper implements Validateab
 $dataMappers = new DataMappers();
 $dataMappers->setValidator(Validation::createValidator());
 
-$dataMappers->addMapper($userRegistrationMapper->getName(), $userRegistrationMapper);
-$dataMappers->getMapper('user_registration')->map($input);
+$dataMappers->addMapper(new UserRegistrationMapper());
+$dataMappers->getMapper(UserRegistrationMapper::class)->map($input);
 ```
 
 ### Standalone Data Mapping
@@ -166,11 +141,6 @@ $simpleMapper = new DataMapper(
                 'id' => $input->getId(),
                 'name' => $input->getName()
             ];
-        }
-    
-        public static function getName() : string
-        {
-            return 'simple_mapper';
         }
     
         public function supports($input) : bool

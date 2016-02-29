@@ -14,25 +14,26 @@ class DataMappersTest extends \PHPUnit_Framework_TestCase
         $dataMappers->setValidator($validatorMock);
 
         $mapperMock = $this->getMockForAbstractClass('\Thruster\Component\DataMapper\DataMapperInterface');
+        $mapperName = get_class($mapperMock);
+        
+        $this->assertFalse($dataMappers->hasMapper($mapperName));
 
-        $this->assertFalse($dataMappers->hasMapper('demo'));
+        $dataMappers->addMapper($mapperMock);
 
-        $dataMappers->addMapper('demo', $mapperMock);
+        $this->assertTrue($dataMappers->hasMapper($mapperName));
 
-        $this->assertTrue($dataMappers->hasMapper('demo'));
-
-        $wrappedMapper = $dataMappers->getMapper('demo');
+        $wrappedMapper = $dataMappers->getMapper($mapperName);
 
         $this->assertEquals($validatorMock, $wrappedMapper->getValidator());
 
         $this->assertInstanceOf('\Thruster\Component\DataMapper\DataMapper', $wrappedMapper);
         $this->assertEquals($mapperMock, $wrappedMapper->getDataMapper());
 
-        $this->assertEquals($wrappedMapper, $dataMappers->getMapper('demo'));
+        $this->assertEquals($wrappedMapper, $dataMappers->getMapper($mapperName));
 
-        $dataMappers->removeMapper('demo');
+        $dataMappers->removeMapper($mapperName);
 
-        $this->assertFalse($dataMappers->hasMapper('demo'));
+        $this->assertFalse($dataMappers->hasMapper($mapperName));
     }
 
     /**

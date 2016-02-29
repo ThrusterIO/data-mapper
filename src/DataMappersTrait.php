@@ -28,12 +28,12 @@ trait DataMappersTrait
     }
 
     /**
-     * @param string $name
+     * @param string $class
      *
      * @return DataMapper
      */
-    public function getDataMapper(string $name) : DataMapper
+    public function getDataMapper(string $class) : DataMapper
     {
-        return $this->dataMappers->getMapper($name);
+        return $this->dataMappers->getMapper($class);
     }
 }

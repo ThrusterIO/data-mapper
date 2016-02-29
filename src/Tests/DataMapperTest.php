@@ -11,7 +11,7 @@ class DataMapperTest extends \PHPUnit_Framework_TestCase
 {
     public function testMap()
     {
-        $input = new \stdClass();
+        $input      = new \stdClass();
         $mapperMock = $this->getMockForAbstractClass('\Thruster\Component\DataMapper\DataMapperInterface');
 
         $mapperMock->expects($this->once())
@@ -31,7 +31,7 @@ class DataMapperTest extends \PHPUnit_Framework_TestCase
 
     public function testMapCollection()
     {
-        $input = new \stdClass();
+        $input  = new \stdClass();
         $inputs = [10 => $input, 20 => $input, 30 => $input];
 
         $mapperMock = $this->getMockForAbstractClass('\Thruster\Component\DataMapper\DataMapperInterface');
@@ -54,19 +54,17 @@ class DataMapperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Thruster\Component\DataMapper\Exception\NotSupportedInputForDataMapperException
-     * @expectedExceptionMessage DataMapper "demo" does not support input type "stdClass"
+     * @expectedExceptionMessage DataMapper
+     *                           "class@anonymous/Users/gcds/Projects/Home/Desktop/PHP/data-mapper/src/Tests/DataMapper
+     *                           Test.php0x106285897" does not support input type "stdClass"
      */
     public function testMapUnsupported()
     {
-        $input = new \stdClass();
-        $mapperMock = new class extends BaseDataMapper {
+        $input      = new \stdClass();
+        $mapperMock = new class extends BaseDataMapper
+        {
             public function map($input)
             {
-            }
-
-            public static function getName() : string
-            {
-                return 'demo';
             }
 
             public function supports($input) : bool
@@ -84,7 +82,7 @@ class DataMapperTest extends \PHPUnit_Framework_TestCase
      */
     public function testMapValidator()
     {
-        $input = new \stdClass();
+        $input      = new \stdClass();
         $mapperMock = $this->getMockForAbstractClass('\Thruster\Component\DataMapper\ValidateableDataMapperInterface');
 
         $mapperMock->expects($this->once())
@@ -133,10 +131,11 @@ class DataMapperTest extends \PHPUnit_Framework_TestCase
     public function testNestedMapping()
     {
 
-        $item = new \stdClass();
+        $item  = new \stdClass();
         $items = [$item, $item];
 
-        $itemMapper = new class extends BaseDataMapper {
+        $itemMapper = new class extends BaseDataMapper
+        {
             /**
              * @inheritDoc
              */
@@ -144,38 +143,32 @@ class DataMapperTest extends \PHPUnit_Framework_TestCase
             {
                 return $input;
             }
-
-            /**
-             * @inheritDoc
-             */
-            public static function getName() : string
-            {
-                return 'items';
-            }
-
         };
 
-        $mainMapper = new class extends BaseDataMapper {
+        $mainMapper = new class (get_class($itemMapper)) extends BaseDataMapper
+        {
+            private $itemMapperName;
+
+            public function __construct($itemMapperName)
+            {
+                $this->itemMapperName = $itemMapperName;
+            }
+
             public function map($input)
             {
                 return [
-                    'items' => $this->getMapper('items')->mapCollection($input->items)
+                    'items' => $this->getMapper($this->itemMapperName)->mapCollection($input->items),
                 ];
-            }
-
-            public static function getName() : string
-            {
-                return 'demo';
             }
         };
 
-        $given = new \stdClass();
+        $given        = new \stdClass();
         $given->items = $items;
 
         $dataMappersMock = $this->getMock('\Thruster\Component\DataMapper\DataMappers');
         $dataMappersMock->expects($this->once())
             ->method('getMapper')
-            ->with('items')
+            ->with(get_class($itemMapper))
             ->willReturn(new DataMapper($itemMapper));
 
         $mainMapper->setDataMappers($dataMappersMock);
@@ -193,12 +186,13 @@ class DataMapperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNull($mapper->map(null));
     }
+
     public function testMapCollectionNull()
     {
         $mapperMock = $this->getMockForAbstractClass('\Thruster\Component\DataMapper\DataMapperInterface');
 
         $mapper = new DataMapper($mapperMock);
-        
+
         $this->assertEquals([], $mapper->mapCollection(null));
     }
 }
