@@ -44,18 +44,11 @@ class SimpleMapper extends BaseDataMapper {
             'name' => $input->getName()
         ];
     }
-
-    public static function getName()
-    {
-        return 'simple_mapper';
-    }
 }
 
-$simpleMapper = new SimpleMapper();
-
 $dataMappers = new DataMappers();
-$dataMappers->addMapper($simpleMapper->getName(), $simpleMapper);
-$dataMappers->getMapper('simple_mapper')->map($input);
+$dataMappers->addMapper(new SimpleMapper());
+$dataMappers->getMapper(SimpleMapper::class)->map($input);
 ```
 
 ### Nested Data Mapping
@@ -72,11 +65,6 @@ class ItemMapper extends BaseDataMapper {
             'name' => $input->getName()
         ];
     }
-
-    public static function getName()
-    {
-        return 'items';
-    }
 }
 
 class MainMapper extends BaseDataMapper {
@@ -88,23 +76,15 @@ class MainMapper extends BaseDataMapper {
         return [
             'id' => $input->getId(),
             'name' => $input->getName(),
-            'items' => $this->getMapper('items')->mapCollection($input->getItems())
+            'items' => $this->getMapper(ItemMapper::class)->mapCollection($input->getItems())
         ];
-    }
-
-    public static function getName()
-    {
-        return 'main';
     }
 }
 
-$mainMapper = new MainMapper();
-$itemMapper = new ItemMapper();
-
 $dataMappers = new DataMappers();
-$dataMappers->addMapper($mainMapper->getName(), $mainMapper);
-$dataMappers->addMapper($itemMapper->getName(), $itemMapper);
-$dataMappers->getMapper('main')->map($input);
+$dataMappers->addMapper(new MainMapper());
+$dataMappers->addMapper(new ItemMapper());
+$dataMappers->getMapper(MainMapper::class)->map($input);
 ```
 
 ### Validateable Data Mapping
@@ -122,11 +102,6 @@ class UserRegistrationMapper extends BaseDataMapper implements ValidateableDataM
         $user->setPassword($input->get('password'));
     }
 
-    public static function getName()
-    {
-        return 'user_registration';
-    }
-
     public function supports($input)
     {
         return ($input instanceof Request);
@@ -139,12 +114,11 @@ class UserRegistrationMapper extends BaseDataMapper implements ValidateableDataM
 }
 
 
-$userRegistrationMapper = new UserRegistrationMapper();
 $dataMappers = new DataMappers();
 $dataMappers->setValidator(Validation::createValidator());
 
-$dataMappers->addMapper($userRegistrationMapper->getName(), $userRegistrationMapper);
-$dataMappers->getMapper('user_registration')->map($input);
+$dataMappers->addMapper(new UserRegistrationMapper());
+$dataMappers->getMapper(UserRegistrationMapper::class)->map($input);
 ```
 
 ### Standalone Data Mapping
@@ -159,11 +133,6 @@ class SimpleMapper extends BaseDataMapper {
             'id' => $input->getId(),
             'name' => $input->getName()
         ];
-    }
-    
-    public static function getName() : string
-    {
-        return 'simple_mapper';
     }
 }
 

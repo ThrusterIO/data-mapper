@@ -17,15 +17,16 @@ class DataMappersTraitTest extends \PHPUnit_Framework_TestCase
     {
         $mappersMock = $this->getMock('\Thruster\Component\DataMapper\DataMappers');
         $mapperMock = $this->getMockBuilder('\Thruster\Component\DataMapper\DataMapper')->disableOriginalConstructor();
+        $mapperMockName = get_class($mapperMock);
 
         $mappersMock->expects($this->once())
             ->method('getMapper')
-            ->with('foo')
+            ->with($mapperMockName)
             ->willReturn($mapperMock);
 
         $object = new TraitConsumer();
         $object->setDataMappers($mappersMock);
 
-        $this->assertEquals($mapperMock, $object->getDataMapper('foo'));
+        $this->assertEquals($mapperMock, $object->getDataMapper($mapperMockName));
     }
 }

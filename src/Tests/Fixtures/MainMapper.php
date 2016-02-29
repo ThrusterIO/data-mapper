@@ -16,12 +16,7 @@ class MainMapper extends BaseDataMapper
     public function map($input)
     {
         return [
-            'items' => $this->getMapper('items')->mapCollection($input->items)
+            'items' => $this->getMapper(ItemMapper::class)->mapCollection($input->items)
         ];
-    }
-
-    public static function getName()
-    {
-        return 'demo';
     }
 }

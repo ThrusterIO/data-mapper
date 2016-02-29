@@ -23,14 +23,6 @@ class UnsupportedMapper extends BaseDataMapper
     /**
      * @inheritDoc
      */
-    public static function getName()
-    {
-        return 'demo';
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function supports($input)
     {
         return false;

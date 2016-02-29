@@ -19,12 +19,4 @@ class ItemMapper extends BaseDataMapper
     {
         return $input;
     }
-
-    /**
-     * @inheritDoc
-     */
-    public static function getName()
-    {
-        return 'items';
-    }
 }

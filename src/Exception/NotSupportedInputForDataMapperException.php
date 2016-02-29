@@ -19,7 +19,7 @@ class NotSupportedInputForDataMapperException extends \Exception
     {
         $message = sprintf(
             'DataMapper "%s" does not support input type "%s"',
-            $dataMapper->getName(),
+            get_class($dataMapper),
             is_object($input) ? get_class($input) : gettype($input)
         );
 

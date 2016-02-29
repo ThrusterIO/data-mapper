@@ -55,14 +55,13 @@ class DataMappers
     }
 
     /**
-     * @param string              $name
      * @param DataMapperInterface $dataMapper
      *
      * @return $this
      */
-    public function addMapper($name, DataMapperInterface $dataMapper)
+    public function addMapper(DataMapperInterface $dataMapper)
     {
-        $this->dataMappers[$name] = $dataMapper;
+        $this->dataMappers[get_class($dataMapper)] = $dataMapper;
 
         $dataMapper->setDataMappers($this);
 
@@ -70,47 +69,47 @@ class DataMappers
     }
 
     /**
-     * @param string $name
+     * @param string $class
      *
      * @return bool
      */
-    public function hasMapper($name)
+    public function hasMapper($class)
     {
-        return array_key_exists($name, $this->dataMappers);
+        return array_key_exists($class, $this->dataMappers);
     }
 
     /**
-     * @param string $name
+     * @param string $class
      *
      * @return DataMapper
      */
-    public function getMapper($name)
+    public function getMapper($class)
     {
-        if (array_key_exists($name, $this->wrappedDataMappers)) {
-            return $this->wrappedDataMappers[$name];
+        if (array_key_exists($class, $this->wrappedDataMappers)) {
+            return $this->wrappedDataMappers[$class];
         }
 
-        if (false === $this->hasMapper($name)) {
-            throw new DataMapperNotFoundException($name);
+        if (false === $this->hasMapper($class)) {
+            throw new DataMapperNotFoundException($class);
         }
 
-        $dataMapper = new DataMapper($this->dataMappers[$name]);
+        $dataMapper = new DataMapper($this->dataMappers[$class]);
         $dataMapper->setValidator($this->getValidator());
 
-        $this->wrappedDataMappers[$name] = $dataMapper;
+        $this->wrappedDataMappers[$class] = $dataMapper;
 
         return $dataMapper;
     }
 
     /**
-     * @param string $name
+     * @param string $class
      *
      * @return $this
      */
-    public function removeMapper($name)
+    public function removeMapper($class)
     {
-        unset($this->dataMappers[$name]);
-        unset($this->wrappedDataMappers[$name]);
+        unset($this->dataMappers[$class]);
+        unset($this->wrappedDataMappers[$class]);
 
         return $this;
     }

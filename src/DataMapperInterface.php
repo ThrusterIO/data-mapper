@@ -22,11 +22,11 @@ interface DataMapperInterface
     /**
      * Retrieves DataMapper from DataMappers
      *
-     * @param string $name
+     * @param string $class
      *
      * @return DataMapper
      */
-    public function getMapper($name);
+    public function getMapper($class);
 
     /**
      * Maps data
@@ -36,13 +36,6 @@ interface DataMapperInterface
      * @return mixed
      */
     public function map($input);
-
-    /**
-     * Returns a name of Data Mapper
-     *
-     * @return string
-     */
-    public static function getName();
 
     /**
      * Checks if supports input
