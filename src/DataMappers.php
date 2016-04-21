@@ -59,9 +59,13 @@ class DataMappers
      *
      * @return $this
      */
-    public function addMapper(DataMapperInterface $dataMapper)
+    public function addMapper(DataMapperInterface $dataMapper, $name = null)
     {
-        $this->dataMappers[get_class($dataMapper)] = $dataMapper;
+        if (null === $name) {
+            $name = get_class($dataMapper);
+        }
+
+        $this->dataMappers[$name] = $dataMapper;
 
         $dataMapper->setDataMappers($this);
 
@@ -82,6 +86,7 @@ class DataMappers
      * @param string $class
      *
      * @return DataMapper
+     * @throws DataMapperNotFoundException
      */
     public function getMapper($class)
     {
