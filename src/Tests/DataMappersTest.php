@@ -46,4 +46,23 @@ class DataMappersTest extends \PHPUnit_Framework_TestCase
 
         $dataMappers->getMapper('demo');
     }
+
+    public function testCustomName()
+    {
+        $dataMappers = new DataMappers();
+
+        $mapperMock = $this->getMockForAbstractClass('\Thruster\Component\DataMapper\DataMapperInterface');
+        $mapperName = 'demo';
+
+        $this->assertFalse($dataMappers->hasMapper($mapperName));
+
+        $dataMappers->addMapper($mapperMock, $mapperName);
+
+        $this->assertTrue($dataMappers->hasMapper($mapperName));
+
+        $wrappedMapper = $dataMappers->getMapper($mapperName);
+
+        $this->assertInstanceOf('\Thruster\Component\DataMapper\DataMapper', $wrappedMapper);
+        $this->assertEquals($mapperMock, $wrappedMapper->getDataMapper());
+    }
 }
